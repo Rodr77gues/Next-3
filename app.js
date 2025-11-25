@@ -536,34 +536,3 @@ function findByExitStation() {
 
   mostrarProximo();
 }
-// 🔥 MAPA DE CALOR POR ESTAÇÃO
-function gerarHeatmap() {
-  const box = document.getElementById("heatmap-box");
-  if (!box) return;
-
-  const contagem = {};
-
-  allPeople.forEach(p => {
-    if (!contagem[p.saida]) {
-      contagem[p.saida] = 1;
-    } else {
-      contagem[p.saida]++;
-    }
-  });
-
-  const ranking = Object.entries(contagem)
-    .sort((a,b) => b[1] - a[1])
-    .slice(0, 5);
-
-  box.innerHTML = "";
-
-  ranking.forEach(([estacao, qtd]) => {
-    const div = document.createElement("div");
-    div.style.margin = "6px 0";
-    div.innerHTML = `
-      📍 <strong>${estacao}</strong>  
-      <span style="opacity:.7">(${qtd} pessoas)</span>
-    `;
-    box.appendChild(div);
-  });
-}
