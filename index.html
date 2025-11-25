@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>NextStop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ff2f7a" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash" class="splash">
+    <h1>NextStop</h1>
+    <p>O próximo encontro está a uma parada…</p>
+  </div>
+
+  <!-- TELA BOAS-VINDAS -->
+  <section id="welcome-screen" class="screen active">
+    <div class="welcome-box">
+      <h1>🚇 NextStop</h1>
+      <p>Conectando pessoas no metrô e CPTM de São Paulo</p>
+      <ul>
+        <li>🤝 Novas amizades</li>
+        <li>❤️ Paqueras</li>
+        <li>💼 Networking</li>
+        <li>📚 Estudos</li>
+      </ul>
+      <button class="btn-primary big" onclick="showLogin()">Entrar / Criar conta</button>
+    </div>
+  </section>
+
+  <!-- LOGIN / PERFIL -->
+  <section id="login-screen" class="screen">
+    <div class="login-box">
+      <h2>Seu perfil</h2>
+
+      <div class="form-group">
+        <label>Nome</label>
+        <input id="login-nome" type="text" placeholder="Seu nome" />
+      </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input id="login-email" type="email" placeholder="voce@email.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Objetivo principal no app</label>
+        <select id="login-objetivo">
+          <option value="Tudo">🌎 Tudo</option>
+          <option value="Amizade">🤝 Novas amizades</option>
+          <option value="Paquera">❤️ Conhecer alguém</option>
+          <option value="Networking">💼 Networking</option>
+          <option value="Estudos">📚 Estudos</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Disponível para</label>
+        <select id="login-disponibilidade">
+          <option value="Bate-papo">💬 Bate-papo</option>
+          <option value="Encontrar hoje">📅 Encontrar hoje</option>
+          <option value="Combinar outro dia">🕒 Combinar outro dia</option>
+          <option value="Só conversar por enquanto">🌐 Só conversar por enquanto</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Bio (fale de você)</label>
+        <textarea id="login-bio" rows="3"
+          placeholder="Ex: Indo pra faculdade todo dia de manhã, curto música, séries e café."></textarea>
+      </div>
+
+      <button class="btn-primary big" onclick="login()">Salvar e entrar</button>
+      <button class="btn-secondary" onclick="showWelcome()">Voltar</button>
+    </div>
+  </section>
+
+  <!-- APP PRINCIPAL -->
+  <section id="app-screen" class="screen">
+
+    <!-- TOPO -->
+    <header class="top-bar">
+      <div>
+        <h1>NextStop</h1>
+        <p id="top-subtitle">Conectando pessoas no seu trajeto</p>
+      </div>
+      <div class="top-user" id="top-user"></div>
+    </header>
+
+    <!-- TRAJETO / ROTA -->
+    <section class="route-panel">
+      <h2>Seu trajeto</h2>
+      <p class="hint">Escolha a linha, estações e horário em que costuma viajar.</p>
+
+      <div class="form-group">
+        <label>Linha</label>
+        <select id="linhaSelect"></select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Estação de entrada</label>
+          <select id="entradaSelect"></select>
+        </div>
+        <div class="form-group">
+          <label>Estação de saída</label>
+          <select id="saidaSelect"></select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Horário aproximado</label>
+        <input id="horario" type="time" />
+      </div>
+
+      <button class="btn-secondary" onclick="saveRoute()">Salvar trajeto</button>
+      <button class="btn-secondary" onclick="ativarLocalizacao()">Atualizar GPS 📍</button>
+      <button class="btn-secondary" onclick="openRouteInMaps()">Ver no mapa 🗺️</button>
+
+      <p id="routeStatus" class="status-text"></p>
+    </section>
+
+    <!-- SWIPE -->
+    <section id="tab-swipe" class="tab active">
+      <div class="card-container" id="card-container"></div>
+
+      <div class="buttons">
+        <button class="btn-circle" onclick="dislike()">❌</button>
+        <button class="btn-circle" onclick="like()">❤️</button>
+      </div>
+
+      <div class="matches" id="statusMatch"></div>
+    </section>
+
+    <!-- CHAT -->
+    <section id="tab-chat" class="tab">
+      <div id="chat-list" class="chat-list"></div>
+
+      <section id="chat-screen" class="chat">
+        <h2>Chat com <span id="chatWithName"></span></h2>
+        <div id="chatMessages" class="chat-messages"></div>
+
+        <div class="chat-input-row">
+          <input id="chatInput" type="text" placeholder="Digite uma mensagem..." />
+          <button class="btn-primary" onclick="sendMessage()">Enviar</button>
+        </div>
+      </section>
+    </section>
+
+    <!-- PERFIL -->
+    <section id="tab-profile" class="tab">
+      <div class="profile-box" id="profile-box"></div>
+    </section>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <button onclick="showTab('swipe')">🏠</button>
+      <button onclick="showTab('chat')">💬</button>
+      <button onclick="showTab('profile')">👤</button>
+      <button onclick="logout()">🚪</button>
+    </nav>
+  </section>
+
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>
