@@ -176,7 +176,7 @@ function atualizarEstacoes() {
 }
 
 // SALVAR TRAJETO
-function saveRoute()verificarDesembarque(); {
+function saveRoute() {
   const lineName = linhaSelect.value;
   const entrada = entradaSelect.value;
   const saida = saidaSelect.value;
