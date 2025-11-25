@@ -567,19 +567,3 @@ function gerarHeatmap() {
     box.appendChild(div);
   });
 }
-
-// 🔔 ALERTA QUANDO ALGUÉM DESCER NA MESMA ESTAÇÃO
-function verificarDesembarque() {
-
-  if (!userRoute || !userRoute.saida) return;
-
-  const minha = userRoute.saida;
-
-  const mesmaSaida = allPeople.filter(p => p.saida === minha);
-
-  if (mesmaSaida.length > 0) {
-    const nomes = mesmaSaida.map(p => p.name).join(", ");
-
-    alert(`📍 ${nomes} também desceram em ${minha} agora!`);
-  }
-}
