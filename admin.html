@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>NextStop Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  background:#050816; color:white; padding:20px;
+  font-family: Arial;
+}
+.box {
+  padding:15px; margin-bottom:15px; background:#0c0730;
+  border-radius:12px;
+}
+h2 { margin:0 0 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>NextStop – Painel do Administrador</h1>
+
+<div class="box">
+  <h2>Usuários ativos</h2>
+  <p id="usuariosAtivos">Carregando...</p>
+</div>
+
+<div class="box">
+  <h2>Estações mais populares</h2>
+  <div id="estacoesPopulares"></div>
+</div>
+
+<div class="box">
+  <h2>Matches realizados</h2>
+  <p id="matchesCount"></p>
+</div>
+
+<script>
+const pessoas = JSON.parse(localStorage.getItem("nextstopAll")) || [];
+
+document.getElementById("usuariosAtivos").textContent = pessoas.length;
+
+const contagem = {};
+pessoas.forEach(p => contagem[p.saida] = (contagem[p.saida] || 0) + 1);
+
+const ordenado = Object.entries(contagem)
+  .sort((a,b) => b[1] - a[1])
+  .slice(0, 5);
+
+document.getElementById("estacoesPopulares").innerHTML =
+  ordenado.map(e => `📍 ${e[0]} – ${e[1]} pessoas`).join("<br>");
+
+document.getElementById("matchesCount").textContent =
+  localStorage.getItem("nextstopMatches") || 0;
+</script>
+
+</body>
+</html>
