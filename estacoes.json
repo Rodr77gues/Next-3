@@ -1,0 +1,63 @@
+{
+  "Metrô - Linha 1-Azul": [
+    "Jabaquara","Conceição","São Judas","Saúde","Praça da Árvore","Santa Cruz",
+    "Vila Mariana","Ana Rosa","Paraíso","Vergueiro","São Joaquim","Liberdade",
+    "Sé","São Bento","Luz","Tiradentes","Armênia","Portuguesa-Tietê","Carandiru",
+    "Santana","Jardim São Paulo","Parada Inglesa","Tucuruvi"
+  ],
+
+  "Metrô - Linha 2-Verde": [
+    "Vila Prudente","Tamanduateí","Sacomã","Alto do Ipiranga","Santos-Imigrantes",
+    "Chácara Klabin","Ana Rosa","Paraíso","Brigadeiro","Trianon-Masp","Consolação",
+    "Clínicas"
+  ],
+
+  "Metrô - Linha 3-Vermelha": [
+    "Palmeiras-Barra Funda","Marechal Deodoro","Santa Cecília","República",
+    "Anhangabaú","Sé","Brás","Pedro II","Bresser-Mooca","Belém","Tatuapé",
+    "Carrão","Penha","Vila Matilde","Guilhermina-Esperança","Patriarca",
+    "Arthur Alvim","Corinthians-Itaquera"
+  ],
+
+  "Metrô - Linha 4-Amarela": [
+    "Luz","República","Higienópolis-Mackenzie","Paulista","Oscar Freire",
+    "Fradique Coutinho","Faria Lima","Pinheiros","Butantã","São Paulo-Morumbi",
+    "Vila Sônia"
+  ],
+
+  "Metrô - Linha 5-Lilás": [
+    "Capão Redondo","Campo Limpo","Vila das Belezas","Giovanni Gronchi",
+    "Santo Amaro","Largo Treze","Adolfo Pinheiro","Alto da Boa Vista",
+    "Borba Gato","Brooklin","Campo Belo","Eucaliptos","Moema","AACD-Servidor",
+    "Hospital São Paulo","Santa Cruz","Chácara Klabin"
+  ],
+
+  "CPTM - Linha 7-Rubi": [
+    "Jundiaí","Francisco Morato","Caieiras","Perus","Jaraguá","Pirituba",
+    "Lapa","Palmeiras-Barra Funda","Luz"
+  ],
+
+  "CPTM - Linha 8-Diamante": [
+    "Amador Bueno","Itapevi","Jandira","Barueri","Carapicuíba","Presidente Altino",
+    "Lapa","Palmeiras-Barra Funda","Luz"
+  ],
+
+  "CPTM - Linha 9-Esmeralda": [
+    "Osasco","Presidente Altino","Ceasa","Villa-Lobos-Jaguaré","Pinheiros",
+    "Morumbi","Santo Amaro","Jurubatuba","Grajaú"
+  ],
+
+  "CPTM - Linha 10-Turquesa": [
+    "Rio Grande da Serra","Santo André","Capuava","Tamanduateí","Brás","Luz"
+  ],
+
+  "CPTM - Linha 11-Coral": [
+    "Luz","Brás","Tatuapé","Itaquera","Guaianases","Ferraz de Vasconcelos",
+    "Suzano","Mogi das Cruzes","Estudantes"
+  ],
+
+  "CPTM - Linha 12-Safira": [
+    "Brás","Tatuapé","Engenheiro Goulart","Itaim Paulista","São Miguel Paulista",
+    "Calmon Viana","Poá"
+  ]
+}
