@@ -501,3 +501,38 @@ window.onload = () => {
     showWelcome();
   }
 };
+
+// 🔍 PROCURAR PESSOAS PELA MESMA ESTAÇÃO DE SAÍDA
+function findByExitStation() {
+
+  if (!userRoute || !userRoute.saida || !userRoute.lineName) {
+    alert("Primeiro salve sua linha e estação de saída.");
+    return;
+  }
+
+  const minhaLinha = userRoute.lineName;
+  const minhaSaida = userRoute.saida;
+
+  // Filtra pessoas que descem na mesma estação
+  const pessoasFiltradas = allPeople.filter(p =>
+    p.line === minhaLinha &&
+    p.saida === minhaSaida
+  );
+
+  if (pessoasFiltradas.length === 0) {
+    cardContainer.innerHTML = `
+      <p>😢 Ninguém cadastrado descendo em <strong>${minhaSaida}</strong> no momento</p>
+    `;
+    return;
+  }
+
+  // Substitui a lista atual
+  currentPeople = pessoasFiltradas;
+  currentIndex = 0;
+
+  statusMatch.innerHTML = `
+    📍 Mostrando pessoas que descem em <strong>${minhaSaida}</strong>
+  `;
+
+  mostrarProximo();
+}
