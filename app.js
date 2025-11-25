@@ -442,7 +442,7 @@ function renderTopUser() {
   }
 }
 
-function renderProfileBox()gerarHeatmap(); {
+function renderProfileBox() {
   if (!currentUser) return;
   profileBox.innerHTML = `
     <div class="profile-box-header">
