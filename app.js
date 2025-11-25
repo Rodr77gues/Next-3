@@ -1,18 +1,3 @@
-// ===== VARIÁVEIS GLOBAIS ESSENCIAIS =====
-let userRoute = null;
-let allPeople = [];
-let currentPeople = [];
-let currentIndex = 0;
-const statusMatch = document.getElementById("routeStatus");
-
-try {
-  if (localStorage.getItem("nextstopPeople")) {
-    allPeople = JSON.parse(localStorage.getItem("nextstopPeople"));
-  }
-} catch (e) {
-  allPeople = [];
-}
-
 // ELEMENTOS PRINCIPAIS
 const splash = document.getElementById("splash");
 const welcomeScreen = document.getElementById("welcome-screen");
