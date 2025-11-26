@@ -11,6 +11,9 @@
   <link rel="apple-touch-icon" href="icon-192.png" />
 
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Maps -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=SUA_GOOGLE_MAPS_KEY"></script>
 </head>
 <body>
 
@@ -125,55 +128,7 @@
       <p id="routeStatus" class="status-text"></p>
     </section>
 
-    <section id="tab-swipe" class="tab active">
-      <div class="card-container" id="card-container"></div>
-      
-      <button class="btn-secondary big" onclick="findByExitStation()">
-        📍 Quem desce comigo nesta estação?
-      </button> 
-      
-      <div class="buttons">
-        <button class="btn-circle" onclick="dislike()">❌</button>
-        <button class="btn-circle" onclick="like()">❤️</button>
-      </div>
-
-      <div class="matches" id="statusMatch"></div>
-    </section>
-
-    <section id="tab-chat" class="tab">
-      <div id="chat-list" class="chat-list"></div>
-
-      <section id="chat-screen" class="chat">
-        <h2>Chat com <span id="chatWithName"></span></h2>
-        <div id="chatMessages" class="chat-messages"></div>
-
-        <div class="chat-input-row">
-          <input id="chatInput" type="text" placeholder="Digite uma mensagem..." />
-          <button class="btn-primary" onclick="sendMessage()">Enviar</button>
-        </div>
-      </section>
-    </section>
-
-    <section id="tab-profile" class="tab">
-      <div class="profile-box" id="profile-box"></div>
-    </section>
-
-    <nav class="navbar">
-      <button onclick="showTab('swipe')">🏠</button>
-      <button onclick="showTab('chat')">💬</button>
-      <button onclick="showTab('profile')">👤</button>
-      <button onclick="logout()">🚪</button>
-    </nav>
-
   </section>
-
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(console.error);
-      });
-    }
-  </script>
 
   <!-- MAPA -->
   <div id="map-container" style="display:none; position:fixed; inset:0; z-index:999;">
@@ -184,8 +139,66 @@
     <div id="map" style="width:100%; height:100%;"></div>
   </div>
 
-<script>
-  
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_PROJETO.firebaseapp.com",
+      projectId: "SEU_PROJETO",
+      storageBucket: "SEU_PROJETO.appspot.com",
+      messagingSenderId: "XXXXXX",
+      appId: "XXXXXX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.login = function () {
+      const nome = document.getElementById("login-nome").value;
+      const email = document.getElementById("login-email").value;
+
+      if (!email || !nome) {
+        alert("Preencha nome e e-mail");
+        return;
+      }
+
+      const senha = "123456"; // temporária
+
+      createUserWithEmailAndPassword(auth, email, senha)
+        .then(() => {
+          entrarNoApp(nome);
+        })
+        .catch((error) => {
+          if (error.code === "auth/email-already-in-use") {
+            signInWithEmailAndPassword(auth, email, senha)
+              .then(() => {
+                entrarNoApp(nome);
+              })
+              .catch(err => alert(err.message));
+          } else {
+            alert(error.message);
+          }
+        });
+    };
+
+    function entrarNoApp(nome) {
+      document.getElementById("welcome-screen").classList.remove("active");
+      document.getElementById("login-screen").classList.remove("active");
+      document.getElementById("app-screen").classList.add("active");
+      document.getElementById("top-user").innerText = nome;
+    }
+
+    window.logout = function() {
+      location.reload();
+    };
+
+  </script>
+
+  <!-- MAPA (CORRIGIDO) -->
   <script>
     let map, marker;
 
@@ -224,10 +237,28 @@
         });
       }
     }
-  </script>
+
+    function showLogin() {
+      document.getElementById("welcome-screen").classList.remove("active");
+      document.getElementById("login-screen").classList.add("active");
+    }
+
+    function showWelcome() {
+      document.getElementById("login-screen").classList.remove("active");
+      document.getElementById("welcome-screen").classList.add("active");
+    }
+
+    function ativarLocalizacao() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          alert("Localização atual: " + pos.coords.latitude + ", " + pos.coords.longitude);
+        });
+      }
+    }
+  </script> 
 
   <!-- COLE SUA NOVA CHAVE AQUI -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoLrGif8kiZzi-AD5RM5t_nTu5Am0Dvq4&callback=initMap" async defer></script>
+  <script> src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoLrGif8kiZzi-AD5RM5t_nTu5Am0Dvq4&callback=initMap" async defer></script>
 
 </body>
 </html>
