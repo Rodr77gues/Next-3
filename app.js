@@ -104,27 +104,72 @@ function showApp() {
   loginScreen.classList.remove("active");
   appScreen.classList.add("active");
 }
-
-// LOGIN
-function login() {
-  const nome = loginNome.value.trim();
-  const email = loginEmail.value.trim();
-  const objetivo = loginObjetivo.value;
-  const disponibilidade = loginDisponibilidade.value;
-  const bio = loginBio.value.trim();
+async function login() {
+  const nome = document.getElementById("login-nome").value;
+  const email = document.getElementById("login-email").value;
+  const objetivo = document.getElementById("login-objetivo").value;
+  const disponibilidade = document.getElementById("login-disponibilidade").value;
+  const bio = document.getElementById("login-bio").value;
 
   if (!nome || !email) {
-    alert("Preencha nome e e-mail.");
+    alert("Preencha nome e e-mail");
     return;
   }
 
-  currentUser = { nome, email, objetivo, disponibilidade, bio };
-  localStorage.setItem("nextstopUser", JSON.stringify(currentUser));
+  try {
+    // Cria usuário ou faz login
+    const userCredential = await auth.createUserWithEmailAndPassword(email, "123456");
 
-  renderTopUser();
-  renderProfileBox();
-  showApp();
-  initApp();
+    const user = userCredential.user;
+
+    // Salva no banco de dados
+    await db.collection("users").doc(user.uid).set({
+      nome,
+      email,
+      objetivo,
+      disponibilidade,
+      bio,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    localStorage.setItem("userId", user.uid);
+    localStorage.setItem("userNome", nome);
+
+    document.getElementById("top-user").innerText = nome;
+
+    showApp();
+
+    alert("✅ Cadastro realizado com sucesso!");
+
+  } catch (error) {
+
+    // Se o usuário já existir, só faz login
+    if (error.code === "auth/email-already-in-use") {
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, "123456");
+        const user = userCredential.user;
+
+        const doc = await db.collection("users").doc(user.uid).get();
+        const data = doc.data();
+
+        if (data) {
+          document.getElementById("top-user").innerText = data.nome;
+        }
+
+        showApp();
+
+        alert("✅ Login realizado com sucesso!");
+
+      } catch (e) {
+        alert("Erro ao fazer login");
+        console.error(e);
+      }
+
+    } else {
+      alert(error.message);
+      console.error(error);
+    }
+  }
 }
 
 // LOGOUT
