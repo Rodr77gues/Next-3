@@ -9,13 +9,23 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <!-- ESTILO -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- GOOGLE MAPS (troque a key) -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEtq-uC5EfUAIseO7dEPL5QEfoZLYaSgU"></script>
+  <!-- GOOGLE MAPS (coloque sua key segura aqui depois) -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=SUA_GOOGLE_MAPS_KEY"></script>
+
+  <style>
+    /* Esconder app até logar */
+    #app-screen { display: none; }
+    body.logged #app-screen { display: block; }
+    body.logged #welcome-screen,
+    body.logged #login-screen {
+      display: none !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -57,7 +67,7 @@
       <div class="auth-wrapper card">
         <button class="back-btn" onclick="showWelcome()">←</button>
         <h2>Crie seu perfil</h2>
-        <p class="muted">Use seu e-mail para entrar. Se ainda não tiver conta, criaremos pra você na hora.</p>
+        <p class="muted">Use seu e-mail e senha. Se ainda não tiver conta, ela será criada automaticamente.</p>
 
         <div class="form-group">
           <label>Nome</label>
@@ -67,6 +77,12 @@
         <div class="form-group">
           <label>E-mail</label>
           <input id="login-email" type="email" placeholder="voce@email.com" />
+        </div>
+
+        <!-- ✅ ADICIONADO -->
+        <div class="form-group">
+          <label>Senha</label>
+          <input id="login-senha" type="password" placeholder="Crie sua senha" />
         </div>
 
         <div class="form-group">
@@ -96,14 +112,20 @@
             placeholder="Ex: Indo pra faculdade todo dia de manhã, curto música, séries e café."></textarea>
         </div>
 
-        <button class="btn-primary big" onclick="login()">
+        <!-- ✅ CORRIGIDO -->
+        <button class="btn-primary big" onclick="loginEmail()">
           Salvar perfil e entrar
+        </button>
+
+        <!-- ✅ opcional - Google -->
+        <button class="btn-secondary big" onclick="loginGoogle()">
+          Entrar com Google
         </button>
       </div>
     </section>
 
     <!-- APP PRINCIPAL -->
-    <section id="app-screen" class="screen hidden">
+    <section id="app-screen" class="screen">
 
       <!-- TOPO -->
       <header class="top-bar">
@@ -130,18 +152,8 @@
         <!-- DISCOVER -->
         <section id="tab-discover" class="tab active">
           <h2>Pessoas no seu trajeto</h2>
-          <p class="muted small">
-            Baseado na sua linha, estações e horário. Use os botões como num app de encontros.
-          </p>
 
-          <div id="discover-empty" class="empty-state hidden">
-            <p>Nenhuma pessoa perto do seu trajeto ainda.</p>
-            <button class="btn-secondary small" onclick="refreshDiscover()">Atualizar</button>
-          </div>
-
-          <div id="discover-cards" class="cards-stack">
-            <!-- cards de pessoas -->
-          </div>
+          <div id="discover-cards" class="cards-stack"></div>
 
           <div class="swipe-actions">
             <button class="swipe-btn dislike" onclick="swipeCurrent('dislike')">❌</button>
@@ -152,21 +164,14 @@
         <!-- MATCHES -->
         <section id="tab-matches" class="tab">
           <h2>Seus matches</h2>
-          <div id="matches-list" class="list">
-            <!-- matches -->
-          </div>
-          <div id="matches-empty" class="empty-state hidden">
-            <p>Você ainda não tem matches. Continue descobrindo pessoas ✨</p>
-          </div>
+          <div id="matches-list" class="list"></div>
         </section>
 
         <!-- CHAT -->
         <section id="tab-chat" class="tab chat-tab">
           <aside class="chat-list">
             <h3>Conversas</h3>
-            <div id="chat-list" class="list scroll-y">
-              <!-- conversas -->
-            </div>
+            <div id="chat-list" class="list scroll-y"></div>
           </aside>
 
           <section class="chat-window">
@@ -174,16 +179,14 @@
               <button class="back-btn mobile-only" onclick="closeChatMobile()">←</button>
               <div>
                 <h3 id="chat-with-name">Selecione um match</h3>
-                <p id="chat-with-subtitle" class="muted small"></p>
               </div>
             </div>
 
-            <div id="chat-messages" class="chat-messages">
-              <!-- mensagens -->
-            </div>
+            <div id="chat-messages" class="chat-messages"></div>
 
             <div class="chat-input-row">
-              <input id="chat-input" type="text" placeholder="Digite uma mensagem..." />
+              <input id="chat-input" type="text"
+                placeholder="Digite uma mensagem..." />
               <button class="btn-primary" onclick="sendMessage()">Enviar</button>
             </div>
           </section>
@@ -194,7 +197,6 @@
           <h2>Seu perfil</h2>
 
           <div class="card">
-            <h3>Informações básicas</h3>
             <div class="profile-row">
               <span>Nome</span>
               <strong id="profile-nome"></strong>
@@ -213,77 +215,31 @@
             </div>
             <div class="profile-row">
               <span>Bio</span>
-              <p id="profile-bio" class="muted"></p>
+              <p id="profile-bio"></p>
             </div>
-          </div>
-
-          <div class="card">
-            <h3>Seu trajeto</h3>
-            <p class="muted small">Use isso para melhorar as sugestões de pessoas.</p>
-
-            <div class="form-group">
-              <label>Linha</label>
-              <select id="linhaSelect">
-                <option value="">Selecione uma linha</option>
-              </select>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>Estação de entrada</label>
-                <select id="entradaSelect">
-                  <option value="">Selecione a estação</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Estação de saída</label>
-                <select id="saidaSelect">
-                  <option value="">Selecione a estação</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Horário aproximado</label>
-              <input id="horario" type="time" />
-            </div>
-
-            <button class="btn-primary full" onclick="saveRoute()">Salvar trajeto</button>
-            <button class="btn-secondary full" onclick="ativarLocalizacao()">Atualizar GPS 📍</button>
-            <button class="btn-ghost full" onclick="abrirMapa()">Ver no mapa 🗺️</button>
-
-            <p id="routeStatus" class="status-text muted small"></p>
           </div>
 
           <button class="btn-danger full" onclick="logout()">
             Sair da conta
           </button>
         </section>
-
       </main>
+
     </section>
 
-    <!-- MAPA EM TELA CHEIA -->
-    <div id="map-container" class="map-overlay hidden">
-      <button class="map-close" onclick="fecharMapa()">❌</button>
-      <div id="map"></div>
-    </div>
+    <!-- SERVICE WORKER -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(console.error);
+        });
+      }
+    </script>
+
+    <!-- ✅ ORDEM CORRETA DOS SCRIPTS -->
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="app.js"></script>
+
   </div>
-
-  <!-- SERVICE WORKER -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(console.error);
-      });
-    }
-  </script>
-
-  <!-- LÓGICA DO APP -->
-  <script src="app.js"></script>
-
-  <!-- FIREBASE (Auth + Firestore) -->
-  <script type="module" src="firebase.js"></script>
 </body>
 </html>
