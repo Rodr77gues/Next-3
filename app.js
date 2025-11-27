@@ -1,3 +1,13 @@
+// REMOVE SPLASH SCREEN
+window.addEventListener("load", () => {
+  const splash = document.getElementById("splash");
+
+  setTimeout(() => {
+    if (splash) splash.style.display = "none";
+    document.getElementById("welcome-screen")?.classList.remove("hidden");
+  }, 2000);
+});
+
 // app.js - NextStop (frontend + Firestore básico)
 
 import {
