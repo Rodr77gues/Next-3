@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <title>NextStop</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#ff2f7a" />
 
@@ -10,11 +12,13 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 
+  <!-- ESTILO -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Google Maps -->
+  <!-- GOOGLE MAPS -->
   <script src="https://maps.googleapis.com/maps/api/js?key=SUA_GOOGLE_MAPS_KEY"></script>
 </head>
+
 <body>
 
   <!-- SPLASH -->
@@ -28,13 +32,17 @@
     <div class="welcome-box">
       <h1>🚇 NextStop</h1>
       <p>Conectando pessoas no metrô e CPTM de São Paulo</p>
+
       <ul>
         <li>🤝 Novas amizades</li>
         <li>❤️ Paqueras</li>
         <li>💼 Networking</li>
         <li>📚 Estudos</li>
       </ul>
-      <button class="btn-primary big" onclick="showLogin()">Entrar / Criar conta</button>
+
+      <button class="btn-primary big" onclick="showLogin()">
+        Entrar / Criar conta
+      </button>
     </div>
   </section>
 
@@ -76,12 +84,20 @@
 
       <div class="form-group">
         <label>Bio (fale de você)</label>
-        <textarea id="login-bio" rows="3"
-          placeholder="Ex: Indo pra faculdade todo dia de manhã, curto música, séries e café."></textarea>
+        <textarea
+          id="login-bio"
+          rows="3"
+          placeholder="Ex: Indo pra faculdade todo dia de manhã, curto música, séries e café.">
+        </textarea>
       </div>
 
-      <button class="btn-primary big" onclick="login()">Salvar e entrar</button>
-      <button class="btn-secondary" onclick="showWelcome()">Voltar</button>
+      <button class="btn-primary big" onclick="login()">
+        Salvar e entrar
+      </button>
+
+      <button class="btn-secondary" onclick="showWelcome()">
+        Voltar
+      </button>
     </div>
   </section>
 
@@ -91,28 +107,37 @@
     <header class="top-bar">
       <div>
         <h1>NextStop</h1>
-        <p id="top-subtitle">Conectando pessoas no seu trajeto</p>
+        <p>Conectando pessoas no seu trajeto</p>
       </div>
       <div class="top-user" id="top-user"></div>
     </header>
 
     <section class="route-panel">
       <h2>Seu trajeto</h2>
-      <p class="hint">Escolha a linha, estações e horário em que costuma viajar.</p>
+      <p class="hint">
+        Escolha a linha, estações e horário em que costuma viajar.
+      </p>
 
       <div class="form-group">
         <label>Linha</label>
-        <select id="linhaSelect"></select>
+        <select id="linhaSelect">
+          <option>Selecione uma linha</option>
+        </select>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Estação de entrada</label>
-          <select id="entradaSelect"></select>
+          <select id="entradaSelect">
+            <option>Escolha uma estação</option>
+          </select>
         </div>
+
         <div class="form-group">
           <label>Estação de saída</label>
-          <select id="saidaSelect"></select>
+          <select id="saidaSelect">
+            <option>Escolha uma estação</option>
+          </select>
         </div>
       </div>
 
@@ -121,9 +146,17 @@
         <input id="horario" type="time" />
       </div>
 
-      <button class="btn-secondary" onclick="saveRoute()">Salvar trajeto</button>
-      <button class="btn-secondary" onclick="ativarLocalizacao()">Atualizar GPS 📍</button>
-      <button class="btn-secondary" onclick="abrirMapa()">Ver no mapa 🗺️</button>
+      <button class="btn-secondary" onclick="saveRoute()">
+        Salvar trajeto
+      </button>
+
+      <button class="btn-secondary" onclick="ativarLocalizacao()">
+        Atualizar GPS 📍
+      </button>
+
+      <button class="btn-secondary" onclick="abrirMapa()">
+        Ver no mapa 🗺️
+      </button>
 
       <p id="routeStatus" class="status-text"></p>
     </section>
@@ -133,57 +166,35 @@
   <!-- MAPA -->
   <div id="map-container" style="display:none; position:fixed; inset:0; z-index:999;">
     <button onclick="fecharMapa()" 
-            style="position:absolute; top:10px; right:10px; z-index:1000; padding:10px; background:#ff2f7a; color:white; border:none; border-radius:10px;">
+      style="position:absolute; top:10px; right:10px; z-index:1000; padding:10px; background:#ff2f7a; color:white; border:none; border-radius:10px;">
       ❌ Fechar mapa
     </button>
+
     <div id="map" style="width:100%; height:100%;"></div>
   </div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  <!-- SERVICE WORKER -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(console.error);
+      });
+    }
+  </script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCEtq-uC5EfUAIseO7dEPL5QEfoZLYaSgU",
-      authDomain: "nextstop-a15ad.firebaseapp.com",
-      projectId: "nextstop-a15ad",
-      storageBucket: "nextstop-a15ad.firebasestorage.app",
-      messagingSenderId: "340141470022",
-      appId: "1:340141470022:web:8de279a702cc25827f7547"
-    };
+  <!-- LÓGICA DO APP + MAPA -->
+  <script>
+    let map, marker;
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    function showLogin() {
+      document.getElementById("welcome-screen").classList.remove("active");
+      document.getElementById("login-screen").classList.add("active");
+    }
 
-    window.login = function () {
-      const nome = document.getElementById("login-nome").value;
-      const email = document.getElementById("login-email").value;
-
-      if (!email || !nome) {
-        alert("Preencha nome e e-mail");
-        return;
-      }
-
-      const senha = "123456"; // temporária
-
-      createUserWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-          entrarNoApp(nome);
-        })
-        .catch((error) => {
-          if (error.code === "auth/email-already-in-use") {
-            signInWithEmailAndPassword(auth, email, senha)
-              .then(() => {
-                entrarNoApp(nome);
-              })
-              .catch(err => alert(err.message));
-          } else {
-            alert(error.message);
-          }
-        });
-    };
+    function showWelcome() {
+      document.getElementById("login-screen").classList.remove("active");
+      document.getElementById("welcome-screen").classList.add("active");
+    }
 
     function entrarNoApp(nome) {
       document.getElementById("welcome-screen").classList.remove("active");
@@ -191,16 +202,6 @@
       document.getElementById("app-screen").classList.add("active");
       document.getElementById("top-user").innerText = nome;
     }
-
-    window.logout = function() {
-      location.reload();
-    };
-
-  </script>
-
-  <!-- MAPA (CORRIGIDO) -->
-  <script>
-    let map, marker;
 
     function abrirMapa() {
       document.getElementById("map-container").style.display = "block";
@@ -216,13 +217,13 @@
 
       map = new google.maps.Map(document.getElementById("map"), {
         center: inicial,
-        zoom: 16,
+        zoom: 15,
       });
 
       marker = new google.maps.Marker({
         position: inicial,
         map: map,
-        title: "Você está aqui",
+        title: "Você está aqui"
       });
 
       if (navigator.geolocation) {
@@ -238,27 +239,30 @@
       }
     }
 
-    function showLogin() {
-      document.getElementById("welcome-screen").classList.remove("active");
-      document.getElementById("login-screen").classList.add("active");
-    }
-
-    function showWelcome() {
-      document.getElementById("login-screen").classList.remove("active");
-      document.getElementById("welcome-screen").classList.add("active");
-    }
-
     function ativarLocalizacao() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((pos) => {
-          alert("Localização atual: " + pos.coords.latitude + ", " + pos.coords.longitude);
+          alert("Localização atual: " + 
+            pos.coords.latitude.toFixed(5) + ", " + 
+            pos.coords.longitude.toFixed(5)
+          );
         });
       }
     }
-  </script> 
 
-  <!-- COLE SUA NOVA CHAVE AQUI -->
-  <script> src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoLrGif8kiZzi-AD5RM5t_nTu5Am0Dvq4&callback=initMap" async defer></script>
+    function saveRoute() {
+      const linha = document.getElementById("linhaSelect").value;
+      const entrada = document.getElementById("entradaSelect").value;
+      const saida = document.getElementById("saidaSelect").value;
+      const horario = document.getElementById("horario").value;
+
+      document.getElementById("routeStatus").innerText =
+        "Trajeto salvo: " + linha + " | " + entrada + " → " + saida + " às " + horario;
+    }
+  </script>
+
+  <!-- QUANDO CRIAR A PASTA /js, COLE ISSO AQUI 👇 -->
+  <!-- <script type="module" src="./js/firebase.js"></script> -->
 
 </body>
 </html>
