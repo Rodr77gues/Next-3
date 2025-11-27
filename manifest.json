@@ -1,13 +1,13 @@
 {
-  "name": "NextStop - Conexões no Metrô e CPTM",
+  "name": "NextStop - Conexões por Estações",
   "short_name": "NextStop",
-  "description": "Faça amizades, paqueras e networking nas estações de metrô e CPTM de São Paulo.",
+  "description": "Conecte-se com pessoas, networking e oportunidades perto de você.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#020617",
+  "theme_color": "#020617",
   "icons": [
     {
       "src": "icons/icon-192.png",
