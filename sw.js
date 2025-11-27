@@ -1,10 +1,13 @@
-const CACHE_NAME = "nexa-cache-v1";
+// sw.js - NextStop
+
+const CACHE_NAME = "nextstop-cache-v1";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
+  "./firebase.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
@@ -35,8 +38,11 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then((cached) => {
       return (
         cached ||
-        fetch(event.request).catch(() =>
-          new Response("Você está offline. Tente novamente mais tarde.")
+        fetch(event.request).catch(
+          () =>
+            new Response(
+              "Você está offline. Tente novamente quando tiver conexão."
+            )
         )
       );
     })
