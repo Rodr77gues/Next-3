@@ -1,13 +1,14 @@
-// js/firebase.js
+// firebase.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import { 
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword 
+  signInWithEmailAndPassword,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// 🔧 SUA CONFIG DO FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCEtq-uC5EfUAIseO7dEPL5QEfoZLYaSgU",
   authDomain: "nextstop-a15ad.firebaseapp.com",
@@ -20,45 +21,44 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-window.login = async function () {
-  const nome = document.getElementById("login-nome").value;
-  const email = document.getElementById("login-email").value;
+// Função chamada pelo botão "Salvar e entrar"
+async function handleLogin() {
+  const nome = document.getElementById("login-nome").value.trim();
+  const email = document.getElementById("login-email").value.trim();
 
   if (!nome || !email) {
     alert("Preencha nome e e-mail");
     return;
   }
 
-  const senha = "123456"; // senha temporária
+  const senha = "123456"; // temporária só pra testar
 
   try {
+    // tenta cadastrar
     await createUserWithEmailAndPassword(auth, email, senha);
-    entrarNoApp(nome);
-  } 
-  catch (error) {
-
+    window.entrarNoApp(nome);
+  } catch (error) {
     if (error.code === "auth/email-already-in-use") {
+      // se já existe, faz login
       try {
         await signInWithEmailAndPassword(auth, email, senha);
-        entrarNoApp(nome);
+        window.entrarNoApp(nome);
       } catch (err) {
         alert(err.message);
       }
-
     } else {
       alert(error.message);
     }
   }
-};
-
-function entrarNoApp(nome) {
-  document.getElementById("welcome-screen").classList.remove("active");
-  document.getElementById("login-screen").classList.remove("active");
-  document.getElementById("app-screen").classList.add("active");
-
-  document.getElementById("top-user").innerText = nome;
 }
 
-window.logout = function () {
-  location.reload();
+// expõe para o HTML
+window.login = handleLogin;
+
+window.logout = async function () {
+  try {
+    await signOut(auth);
+  } finally {
+    location.reload();
+  }
 };
