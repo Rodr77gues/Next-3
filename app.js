@@ -213,3 +213,15 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 console.log("✅ NextStop carregado com sucesso");
+// ================= TELAS DE LOGIN =================
+
+window.showLogin = function () {
+  document.getElementById("welcome-screen")?.classList.add("hidden");
+  document.getElementById("login-screen")?.classList.remove("hidden");
+};
+
+window.showWelcome = function () {
+  document.getElementById("login-screen")?.classList.add("hidden");
+  document.getElementById("welcome-screen")?.classList.remove("hidden");
+};
+
