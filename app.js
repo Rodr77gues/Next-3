@@ -418,3 +418,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // aqui podemos esconder o app até logar.
   setActiveScreen("home");
 });
+
+console.log("✅ NextStop carregado com sucesso");
