@@ -1,64 +1,127 @@
-// firebase.js
+// firebase.js - NEXTSTOP (PROFISSIONAL)
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
+import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// 🔧 SUA CONFIG DO FIREBASE
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔧 COLE AQUI SUA CONFIG REAL DO FIREBASE
 const firebaseConfig = {
-  apiKey: "AIzaSyCEtq-uC5EfUAIseO7dEPL5QEfoZLYaSgU",
-  authDomain: "nextstop-a15ad.firebaseapp.com",
-  projectId: "nextstop-a15ad",
-  storageBucket: "nextstop-a15ad.firebasestorage.app",
-  messagingSenderId: "340141470022",
-  appId: "1:340141470022:web:8de279a702cc25827f7547"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Função chamada pelo botão "Salvar e entrar"
-async function handleLogin() {
+// ================================
+// Login com EMAIL + SENHA
+// ================================
+window.loginEmail = async function () {
   const nome = document.getElementById("login-nome").value.trim();
   const email = document.getElementById("login-email").value.trim();
+  const senha = document.getElementById("login-senha").value.trim();
 
-  if (!nome || !email) {
-    alert("Preencha nome e e-mail");
+  if (!nome || !email || !senha) {
+    alert("Preencha todos os campos");
     return;
   }
 
-  const senha = "123456"; // temporária só pra testar
-
   try {
     // tenta cadastrar
-    await createUserWithEmailAndPassword(auth, email, senha);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+
+    await salvarPerfil(userCredential.user.uid, nome, email);
+
     window.entrarNoApp(nome);
+
   } catch (error) {
     if (error.code === "auth/email-already-in-use") {
-      // se já existe, faz login
       try {
-        await signInWithEmailAndPassword(auth, email, senha);
-        window.entrarNoApp(nome);
+        // se já existir, faz login
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+
+        const nomeSalvo = await buscarNome(userCredential.user.uid);
+
+        window.entrarNoApp(nomeSalvo || "Usuário");
+
       } catch (err) {
-        alert(err.message);
+        alert("Senha incorreta");
       }
     } else {
       alert(error.message);
     }
   }
+};
+
+// ================================
+// Login com GOOGLE
+// ================================
+window.loginGoogle = async function () {
+  const provider = new GoogleAuthProvider();
+
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    await salvarPerfil(user.uid, user.displayName || "Usuário", user.email);
+
+    window.entrarNoApp(user.displayName || "Usuário");
+
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+// ================================
+// Salvar perfil no Firestore
+// ================================
+async function salvarPerfil(uid, nome, email) {
+  const ref = doc(db, "users", uid);
+
+  await setDoc(ref, {
+    nome,
+    email,
+    createdAt: serverTimestamp()
+  }, { merge: true });
 }
 
-// expõe para o HTML
-window.login = handleLogin;
+// ================================
+// Buscar nome salvo
+// ================================
+async function buscarNome(uid) {
+  const ref = doc(db, "users", uid);
+  const snap = await getDoc(ref);
 
-window.logout = async function () {
-  try {
-    await signOut(auth);
-  } finally {
-    location.reload();
+  if (snap.exists()) {
+    return snap.data().nome;
   }
+
+  return null;
+}
+
+// ================================
+// Logout
+// ================================
+window.logout = async function () {
+  await signOut(auth);
+  location.reload();
 };
